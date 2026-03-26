@@ -28,6 +28,21 @@ The **Internet Protocol** (IP) is a set of rules or procedure that is used to de
 Full Address: FA10:0000:0000:0000:0202:B3FF:FE1E:1234<br>
 Collapsed Address: FA10::0202:B3FF:FE1E:1234
 
+## Endianess
+
+The standard network uses Big Endian while different computer architectures can use different Endianess.
+
+- Big Endian - The most significant byte (left most byte) is stored in the lowest memory address.
+- Little Endian - The least signigicant byte (right most byte) is stored in the lowest memory address.
+
+## Byte Order Conversion Functions
+| Function | Description
+|----|---|
+| htons() | **h**ost **to** **n**etwork **s**hort, for Ports
+| htohl() | **h**ost **to** **n**etwork **l**ong, for IP addresses
+| ntohs() | **n**etwork **to** **h**ost **s**hort, for Ports
+| ntohl() | **n**etwork **to** **h**ost **l**ong, for IP addresses
+
 ## Socket (IP Address + Port Number)
 * IP address - Unique numerical label for every device connected to a network.
 * Port number - A numeric label that is used in networking to direct data to a specific process, service, or application on a device.
@@ -48,7 +63,7 @@ struct addrinfo
 ```
 
 * ai_flags - Integer bitmask flags that are used to customize behavior of getaddrinfo().
-    1. AI_PASSIVE - Sets the address for passive socket for binding. Server uses this to bind to a specific port the user can then connect to.
+    1. AI_PASSIVE - Sets the address for passive socket for binding. Used as a wildcard by the
     2. AI_NUMERICHOST - Prevents DNS resolution, input hostname must be numeric address string.
     3. AI_NUMERICSERC - Prevents Service name resolution, The service input must be a numerioc port number.
     4. AI_CANNONNAME - Requests canonical name of remote host (server).
@@ -66,7 +81,8 @@ struct addrinfo
     3. 0 - Any socket type.
 * ai_protocol - The language or set of rules the computers will use to communicate with each other when the connection is made.
 * ai_addrlen - The length of the IP address in bytes
-* ai_addr - Generally contains the IP address and the port number of the local host if its the server or the remote host if it the client.
+* ai_addr - IP Address + Port
+    * Server (bind): Represents local address to bind to.
+    * Client (connect): Represents the remote address to connect to.
 * ai_cannoname - The canon (official) name of the remote host (server).
 * ai_next - A pointer to the next address info struct in the linked list.
-
