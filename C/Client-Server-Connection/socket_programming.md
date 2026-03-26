@@ -1,28 +1,38 @@
 # Socket Programming Fundamentals
 
-# IP (Internet Protocol)
-The IP is a set of rules or procedure that is used to define how data is formatted and sent across the internet.
-* Addressing - Provides a way to uniquely identify each device with a number using IPv4(32 bits) or IPv6(128 bits)
-* Encapsulation - Wraps collection of data into packets (datagrams). Each packet is given a source and destination address.
-* Routing - Specifies how these packets are sent through the routers.
-* Fragmentation - If data is too large it is split up even more into smaller packets and then reassemble them when it reaches the destination.
+## IP (Internet Protocol)
+The **Internet Protocol** (IP) is a set of rules or procedure that is used to define how data is formatted and sent across the internet.
+
+### Key Responsibilities
+- **Addressing** - Provides a way to uniquely identify each device with a number using IPv4(32 bits) or IPv6(128 bits)
+- **Encapsulation** - Wraps collection of data into packets (datagrams). Each packet is given a source and destination address.
+- **Routing** - Specifies how these packets are sent through the routers.
+- **Fragmentation** - If data is too large it is split up even more into smaller packets and then reassemble them when it reaches the destination.
 
 ## IPv4 (Internet Protocol Version 4)
-IPv4 uses a 32 bit address to label devices, each byte (8 bits) is seperated by a dot (.). Each number in between the dots ranges from 0 to 255, since 2^8 = 256.
-* ex. <br>123.243.1.1
+- Uses a **32 bit address** to label devices.
+- Divided into **4 bytes**, with each byte seperated by a dot(.).
+- Each number in between the dots ranges from **0-255** (since 2^8 = 256).
+### Example
+123.243.1.1
 
 ## IPv6 (Internet Protocol Version 6)
-IPv6 use a 128 bit address to label devices, every 2 bytes (16 bits) is seperated by a colon (:). Leading 0s are removed. Use double colon (::) to collapse a group of zeros. If there are multiple seperate groups of zeros you can only choose one to collapse otherwise the address becomes ambiguous because there is no way to know how many zero groups are in each spot.
-* ex. <br>Full Address: FA10:0000:0000:0000:0202:B3FF:FE1E:1234
-    <br>Collapsed Address: FA10::0202:B3FF:FE1E:1234
+- Uses a **128 bit address** to label devices
+- Divded into **16 bytes**, with every 2 bytes seperated by a colon(:)
+### Rules
+- Leading 0s are removed.
+- Use double colon (::) to collapse a group of zeros.
+- If there are multiple seperate groups of zeros you can only choose one to collapse otherwise the address becomes ambiguous because there is no way to know how many zero groups are in each spot.
 
+### Example
+Full Address: FA10:0000:0000:0000:0202:B3FF:FE1E:1234<br>
+Collapsed Address: FA10::0202:B3FF:FE1E:1234
 
-
-# Socket (IP Address + Port Number)
+## Socket (IP Address + Port Number)
 * IP address - Unique numerical label for every device connected to a network.
 * Port number - A numeric label that is used in networking to direct data to a specific process, service, or application on a device.
 
-# Address Info
+## Address Info
 ```C
 struct addrinfo
 {
