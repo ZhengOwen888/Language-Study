@@ -210,6 +210,9 @@ int send(
     int len,
     int flags
 );
+
+// returns -1 : error
+// otherwise  : number of bytes processed
 ```
 
 ## recv()
@@ -225,6 +228,9 @@ int recv(
     int len,
     int flags
 );
+
+// returns -1 : error
+// otherwise  : number of bytes processed
 ```
 
 ## sendto()
@@ -240,7 +246,11 @@ int sendto(
     int len,
     unsigned int flags,
     const struct sockaddr *to,
-    socklen_t tolen);
+    socklen_t tolen
+);
+
+// returns -1 : error
+// otherwise  : number of bytes processed
 ```
 
 ## recvfrom()
@@ -256,5 +266,9 @@ int recvfrom(
     int len,
     unsigned int flags,
     struct sockaddr *from,
-    int *fromlen);
+    int *fromlen
+);
+
+// returns -1 : error
+// otherwise  : number of bytes processed
 ```
