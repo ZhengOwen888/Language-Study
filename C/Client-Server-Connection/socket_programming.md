@@ -1,7 +1,7 @@
 # Socket Programming Fundamentals
 
-## IP (Internet Protocol)
-The **Internet Protocol** (IP) is a set of rules or procedure that is used to define how data is formatted and sent across the internet.
+## Internet Layer
+The **Internet Protocol** (IP) part of the internet layer and is a set of rules or procedure that is used to define how data is formatted and sent across the internet.
 
 ### Key Responsibilities
 - **Addressing** - Provides a way to uniquely identify each device with a number using IPv4(32 bits) or IPv6(128 bits)
@@ -26,7 +26,9 @@ The **Internet Protocol** (IP) is a set of rules or procedure that is used to de
 
 ### Example
 Full Address: FA10:0000:0000:0000:0202:B3FF:FE1E:1234<br>
-Collapsed Address: FA10::0202:B3FF:FE1E:1234
+Collapsed Address: FA10::202:B3FF:FE1E:1234
+
+## Transport Protocol
 
 ## Endianess
 
@@ -35,7 +37,7 @@ The standard network uses Big Endian while different computer architectures can 
 - Big Endian - The most significant byte (left most byte) is stored in the lowest memory address.
 - Little Endian - The least signigicant byte (right most byte) is stored in the lowest memory address.
 
-## Byte Order Conversion Functions
+### Byte Order Conversion Functions
 | Function | Description
 |----|---|
 | htons() | **h**ost **to** **n**etwork **s**hort, for Ports
@@ -55,7 +57,7 @@ struct addrinfo
     int             ai_family;
     int             ai_socktype;
     int             ai_protocol;
-    size_t          ai_addrlen;
+    socklen_t       ai_addrlen;
     struct sockaddr *ai_addr;
     char            *ai_canonname;
     struct addrinfo *ai_next;
@@ -63,7 +65,13 @@ struct addrinfo
 ```
 
 * ai_flags - Integer bitmask flags that are used to customize behavior of getaddrinfo().
-    1. AI_PASSIVE - Sets the address for passive socket for binding. Used as a wildcard by the
+
+    1. AI_PASSIVE - Sets the address for passive socket for binding.
+
+    - When AI_PASSIVE is paired with a NULL hostname in getaddrinfo(), a wildcard IP address is returned as 0.0.0.0 in IPv4 or :: in IPv6, which means the Server will listen to all their IP addresses in their network, (e.g.Wifi, VPN). The full sentence becomes: <br>"Listen on port # for all network interfaces (The things that connect you to the internet) on this device.
+    <br>Or
+    <br>"Bind the socket to port # on all local IP addresses across all network interfaces on the host."
+
     2. AI_NUMERICHOST - Prevents DNS resolution, input hostname must be numeric address string.
     3. AI_NUMERICSERC - Prevents Service name resolution, The service input must be a numerioc port number.
     4. AI_CANNONNAME - Requests canonical name of remote host (server).
