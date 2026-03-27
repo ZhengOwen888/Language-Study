@@ -30,6 +30,13 @@ Collapsed Address: FA10::202:B3FF:FE1E:1234
 
 ## Transport Protocol
 
+Transport Protocols are a set of rules and procedures that actuallly does the action of sending the data.
+
+| Protocol | Description |
+|---|---|
+| Transmission Control Protocol (TCP) | Reliable but slow, ensures that data actually arrives and in order. |
+| User Datagram Protocol (UDP) | Less Reliable but fast, unconnected, does not check whether datagram actually arrives or not, datagrams are also not guaranteed to arrive in order. |
+
 ## Endianess
 
 The standard network uses Big Endian while different computer architectures can use different Endianess.
@@ -37,7 +44,7 @@ The standard network uses Big Endian while different computer architectures can 
 - Big Endian - The most significant byte (left most byte) is stored in the lowest memory address.
 - Little Endian - The least signigicant byte (right most byte) is stored in the lowest memory address.
 
-### Byte Order Conversion Functions
+## Byte Order Conversion Functions
 | Function | Description
 |----|---|
 | htons() | **h**ost **to** **n**etwork **s**hort, for Ports
@@ -64,33 +71,190 @@ struct addrinfo
 };
 ```
 
-* ai_flags - Integer bitmask flags that are used to customize behavior of getaddrinfo().
+* **ai_flags** - Integer bitmask flags that are used to customize behavior of getaddrinfo().
+    |Flags|Purpose|
+    |---|---|
+    | AI_PASSIVE | Sets the address for passive socket for binding.<br><br>When AI_PASSIVE is paired with a NULL hostname in getaddrinfo(), a wildcard IP address is returned as 0.0.0.0 in IPv4 or :: in IPv6, which means the Server will listen to all their IP addresses in their network, (e.g.Wifi, VPN). The general meaning becomes: <br>"Listen on port # for all network interfaces (The things that connect you to the internet) on this device. <br> Or <br>"Bind the socket to port # on all local IP addresses across all network interfaces on the host." |
+    | AI_NUMERICHOST | Prevents DNS resolution, input hostname must be numeric address string. |
+    | AI_NUMERICSERC | Prevents Service name resolution, The service input must be a numerioc port number.|
+    | AI_CANNONNAME | Requests canonical name of remote host (server). |
+    | AI_ADDRCONFIG | Returns IPv4 addersses only if IPv4 is configured on the system, and IPv6 only if IPv6 is configured. |
+    | AI_V4MAPPED | If no IPv6 addresses found, return IPv4 mapped IPv6 addresses (e.g. ::ffff:192:0.2.1). |
+    | AI_ALL | Used with AIV4MAPPED to return both IPv6 and IPv4 mapped IPv6 addresses. |
 
-    1. AI_PASSIVE - Sets the address for passive socket for binding.
-
-    - When AI_PASSIVE is paired with a NULL hostname in getaddrinfo(), a wildcard IP address is returned as 0.0.0.0 in IPv4 or :: in IPv6, which means the Server will listen to all their IP addresses in their network, (e.g.Wifi, VPN). The full sentence becomes: <br>"Listen on port # for all network interfaces (The things that connect you to the internet) on this device.
-    <br>Or
-    <br>"Bind the socket to port # on all local IP addresses across all network interfaces on the host."
-
-    2. AI_NUMERICHOST - Prevents DNS resolution, input hostname must be numeric address string.
-    3. AI_NUMERICSERC - Prevents Service name resolution, The service input must be a numerioc port number.
-    4. AI_CANNONNAME - Requests canonical name of remote host (server).
-    5. AI_ADDRCONFIG - Returns IPv4 addersses only if IPv4 is configured on the system, and IPv6 only if IPv6 is configured.
-    6. AI_V4MAPPED - If no IPv6 addresses found, return IPv4 mapped IPv6 addresses (e.g. ::ffff:192:0.2.1)
-    7. AI_ALL - Used with AIV4MAPPED to return both IPv6 and IPv4 mapped IPv6 addresses.
-
-* ai_family - The address family format.
-    1. IPv4 - 32 bits
-    2. IPv6 - 128 bits
-    3. AF_UNSPEC - Any address family format
-* ai_socktype - The socket type used for the network service.
-    1. SOCK_STREAM - Continuous stream, usually Transmission Control Protocol (TCP).
-    2. SOCK_DGRAM - Seperate datagrams, Usually User Datagram Protocol (UDP).
-    3. 0 - Any socket type.
-* ai_protocol - The language or set of rules the computers will use to communicate with each other when the connection is made.
-* ai_addrlen - The length of the IP address in bytes
-* ai_addr - IP Address + Port
+* **ai_family** - The address family format.
+    |Address Family|Info|
+    |---|---|
+    | IPv4 | 32 bits |
+    | IPv6 | 128 bits |
+    | AF_UNSPEC | Any address family format |
+* **ai_socktype** - The socket type used for the network service.
+    | Socket Type | Definition |
+    |---|---|
+    | SOCK_STREAM | Continuous stream, usually Transmission Control Protocol (TCP). |
+    | SOCK_DGRAM | Seperate datagrams, Usually User Datagram Protocol (UDP). |
+    | 0 | Any socket type. |
+* **ai_protocol** - The language or set of rules the computers will use to communicate with each other when the connection is made.
+* **ai_addrlen** - The length of the IP address in bytes
+* **ai_addr** - IP Address + Port
     * Server (bind): Represents local address to bind to.
     * Client (connect): Represents the remote address to connect to.
-* ai_cannoname - The canon (official) name of the remote host (server).
-* ai_next - A pointer to the next address info struct in the linked list.
+* **ai_cannoname** - The canon (official) name of the remote host (server).
+* **ai_next** - A pointer to the next address info struct in the linked list.
+
+## getaddrinfo()
+
+### Description
+Uses a hostname and or service (port) to create one or more structures of address info.
+
+### Syntax
+```C
+int getaddinfo(
+    const char *node,               // hostname (e.g. "www.google.com")
+    const char *service,            // Port (e.g. "http" or 8080)
+    const struct addrinfo *hints,   // Optional used to filter results
+    struct addrinfo **res           // Output linked list of results
+);
+
+// returns 0 : success
+// otherwise : error (use gai_strerr())
+```
+
+## socket()
+
+### Description
+Creates a new socket endpoint
+
+### Syntax
+```C
+int socket(
+    int domain,   // Protocol Family (Use ai_family)
+    int type,     // Socket type
+    int protocol, // Protocol type (0 for default)
+);
+
+// returns >= 0 : success (socket descriptor)
+// returns -1   : error
+```
+
+## bind()
+
+### Decription
+Associates a socket with a specific IP address and port number. Required by servers before accepting connections.
+
+### Syntax
+```C
+int bind(
+    int sockfd,
+    struct sockaddr *my_addr,
+    socklen_t addrlen
+);
+
+// returns -1: error
+```
+
+## connect()
+
+### Decription
+
+### Syntax
+```C
+int connect(
+    int sockfd,
+    struct sockaddr *serv_addr,
+    int addrlen
+);
+
+// returns -1: error
+```
+
+## listen()
+
+### Decription
+
+### Syntax
+```C
+int listen(
+    int sockfd,
+    int backlog, // Number of connections allowed in the queue
+);
+
+// returns -1 : error
+```
+
+## accept()
+
+### Decription
+
+### Syntax
+```C
+int accept(
+    int sockfd,
+    structaddr *addr, // Store client address
+    socklen_t *addrlen // Store client address len
+);
+
+// returns -1 : error
+```
+
+## send()
+
+### Decription
+Sends data over a connected socket (usually TCP).
+
+### Syntax
+```C
+int send(
+    int sockfd,
+    const void *msg,
+    int len,
+    int flags
+);
+```
+
+## recv()
+
+### Decription
+Receives data from a connected socket (usually TCP).
+
+### Syntax
+```C
+int recv(
+    int sockfd,
+    void *buf,
+    int len,
+    int flags
+);
+```
+
+## sendto()
+
+### Decription
+Sends data to a specific address (usually UDP).
+
+### Syntax
+```C
+int sendto(
+    int sockfd,
+    const void *msg,
+    int len,
+    unsigned int flags,
+    const struct sockaddr *to,
+    socklen_t tolen);
+```
+
+## recvfrom()
+
+### Decription
+Receives data from a socket and captures the sender’s address (usually UDP).
+
+### Syntax
+```C
+int recvfrom(
+    int sockfd,
+    void *buf,
+    int len,
+    unsigned int flags,
+    struct sockaddr *from,
+    int *fromlen);
+```
