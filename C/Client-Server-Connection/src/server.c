@@ -134,6 +134,7 @@ int main()
 
                 if (fgets(recv_buf, MAX_BUFFER_SIZE, recv_fd) == NULL)
                 {
+                    // Client closed its send end (write) end
                     if (feof(recv_fd))
                     {
                         fprintf(stderr, "\nServer: Client closed the connection.\n");
@@ -165,6 +166,13 @@ int main()
                 fprintf(send_fd, "%s", send_buf);
                 fflush(send_fd); // Makes sure the full message is written to the client
             }
+
+            /*
+                You do not need to do close(comm_fd)
+
+                fclose(recv_fd) already closes comm_fd for us, because we opened it with fdopen(comm_fd, "r").
+                fclose(send_fd) just closes the file stream for writing to the same socket.
+            */
             fclose(recv_fd);
             fclose(send_fd);
 
@@ -178,7 +186,7 @@ int main()
             pid_t deadChild;
             do
             {
-                deadChild = waitpid(-1, &status, WNOHANG);
+                deadChild = waitpid(-1, &status, WNOHANG); // Non blocking, returns a child pid if there is a dead child
                 if (deadChild == -1)
                 {
                     handle_error("Server: waitpid failed");

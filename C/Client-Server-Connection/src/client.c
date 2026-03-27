@@ -102,6 +102,7 @@
             // Get the data that needs to be sent from stdin (user input)
             if (fgets(send_buf, MAX_BUFFER_SIZE, stdin) == NULL)
             {
+                // Done with input (Ctrl - D)
                 if (feof(stdin))
                 {
                     fprintf(stderr, "\nClient: Closing connection with Server.");
@@ -124,6 +125,7 @@
             */
             if (fgets(recv_buf, MAX_BUFFER_SIZE, recv_fd) == NULL)
             {
+                // Server closed its send (write) end
                 if (feof(recv_fd))
                 {
                     fprintf(stderr, "\nClient: Server Closed the Connection.\n");
@@ -142,6 +144,12 @@
             fprintf(stderr, "Server Response: %s\n", recv_buf);
         }
 
+        /*
+            You do not need to do close(comm_fd)
+
+            fclose(recv_fd) already closes comm_fd for us, because we opened it with fdopen(comm_fd, "r").
+            fclose(send_fd) just closes the file stream for writing to the same socket.
+        */
         fclose(recv_fd);
         fclose(send_fd);
 
