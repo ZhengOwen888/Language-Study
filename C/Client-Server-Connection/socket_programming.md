@@ -156,6 +156,7 @@ int bind(
 ## connect()
 
 ### Decription
+Connect the host socket to the remote host socket (client connects to server).
 
 ### Syntax
 ```C
@@ -171,6 +172,7 @@ int connect(
 ## listen()
 
 ### Decription
+Listen for more incoming requests or connections from remote host. (server listening for clients)
 
 ### Syntax
 ```C
@@ -185,6 +187,7 @@ int listen(
 ## accept()
 
 ### Decription
+Accept a connection request from remote host (server accept client's request).
 
 ### Syntax
 ```C
@@ -195,6 +198,7 @@ int accept(
 );
 
 // returns -1 : error
+// otherwise  : a new socket descriptor for communication with the client.
 ```
 
 ## send()
