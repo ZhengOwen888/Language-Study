@@ -101,4 +101,4 @@ ulimit -c unlimited
 ```
 
 ## 7. References
-1. [Beej's Quick Guide to GDB](https://beej.us/guide/bggdb/)
+1. <a href="https://beej.us/guide/bggdb/" target="_blank">Beej's Quick Guide to GDB</a>

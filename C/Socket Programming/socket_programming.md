@@ -304,4 +304,4 @@ int recvfrom(
 ```
 
 ## 10. References
-1. [Beej's Guide to Network Programming Using Internet Sockets](https://beej.us/guide/bgnet/)
+1. <a href="https://beej.us/guide/bgnet/" target="_blank">Beej's Guide to Network Programming Using Internet Sockets</a>
