@@ -1,20 +1,41 @@
 # gdb Fundamentals
 
-## Starting gdb
+## Table of Contents
+> - [0. Summary](#0.-summary)
+> - [1. Starting gdb](#1.-starting-gdb)
+> - [2. Breakpoints](#2.-breakpoints)
+> - [3. Stepping](#3.-stepping)
+> - [4. Inpecting Variables](#4.-inpecting-variables)
+> - [5. Stack Tracing](#5.-stack-tracing)
+> - [6. Coredumps](#6.-coredumps)
+> - [7. References](#7.-references)
+---
+
+## 0. Summary
+This document is meant for a quick reference for using **GDB** to debug C/C++ programs. It covers essential commands for:
+
+- Starting GDB and running programs
+- Setting and managing breakpoints
+- Stepping through code
+- Inspecting variables and their values
+- Examining the function call stack
+- Using core dumps for analysis
+
+## 1. Starting gdb
 To start gdb, make sure you have a executable c file.
 ```sh
 gcc -Wall -g sumall.c -o sumall # compile the c program
 gdb -tui sumall                 # gdb followed by executable name
 ```
 
-## Run
+## 2. Run
 Run the program with the run command. Pass in command line arguments as arguments for the run command.
 
 ```sh
 (gdb) run arg1 arg2 ...
 ```
 
-## Breakpoints
+## 3. Breakpoints
 You can add breakpoints to stop the execution at a certain point in the program.
 
 ```sh
@@ -30,7 +51,7 @@ You can add breakpoints to stop the execution at a certain point in the program.
 (gdb) disable 3  # diable followed by the breakpoint number.
 ```
 
-## Stepping
+## 4. Stepping
 To move around the program you can use the following commands.
 
 ```sh
@@ -39,7 +60,7 @@ To move around the program you can use the following commands.
 (gdb) continue  # continue to the next breakpoint that was set.
 ```
 
-## Inspecting Variables
+## 5. Inspecting Variables
 
 If you want to display the values of variables during the run that are also in scope, you can use the following commands.
 
@@ -54,7 +75,7 @@ If you want to display the values of variables during the run that are also in s
 (gdb) info locals # display all local variables.
 ```
 
-## Stack Tracing
+## 6. Stack Tracing
 If you want to look at the current function call stack use this command.
 ```sh
 (gdb) backtrace # look at the current function call stack.
@@ -65,7 +86,7 @@ If you want to look at the current function call stack use this command.
 ## Coredumps
 Segmentation fault occurs when the program accesses memory that it is not allowed to. Segment comes from memory segments (e.g. Text Segment, Data Segment, Heap, Stack)<br>.
 
-When segmentation fault occurs, a snapshot of the program called core.
+When segmentation fault occurs, a snapshot of the program called core is created.
 Use gdb examine the snapshot right before the program causes a segmentation fault.
 ```sh
 ./sumall
@@ -73,8 +94,11 @@ Segmentation fault (core dumped)
 gdb -tui -c core sumall
 ```
 
-If no core was created allow core dump with this command
+If no core was created allow core dump of any size with this command.
 ```sh
 ulimit -c unlimited
 ./sumall
 ```
+
+## 7. References
+1. [Beej's Quick Guide to GDB](https://beej.us/guide/bggdb/)

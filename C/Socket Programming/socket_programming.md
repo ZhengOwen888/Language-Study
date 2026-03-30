@@ -1,6 +1,29 @@
 # Socket Programming Fundamentals
 
-## Internet Layer
+## Table of Contents
+> - [0. Summary](#0.-summary)
+> - [1. Internet Layer](#1.-internet-layer)
+> - [2. IPv4](#2.-ipv4)
+> - [3. IPv6](#3.-ipv6)
+> - [4. Transport Protocol](#4.-transport-protocol)
+> - [5. Endianess](#5.-endianess)
+> - [6. Byte Order Conversion Functions](#6.-byte-order-conversion-functions)
+> - [7. Socket](#7.-socket)
+> - [8. Address Info](#8.-address-info)
+> - [9. Networking Functions](#9.-networking-functions)
+> - [10. References](#10.-references)
+---
+
+## 0. Summary
+This document is a quick reference for **Socket Programming in C**, covering the essentials for a very basic network application. It includes:
+
+- Key concepts of the **Internet Layer**, including IPv4 and IPv6 addressing
+- Overview of **transport protocols** (TCP and UDP) and network byte order
+- Basics of **sockets**, including creation, binding, connecting, and communication.
+- Explanation of important **address structures** and flags
+- Common **networking functions** for client-server communication
+
+## 1. Internet Layer
 The **Internet Protocol** (IP) part of the internet layer and is a set of rules or procedure that is used to define how data is formatted and sent across the internet.
 
 ### Key Responsibilities
@@ -9,14 +32,14 @@ The **Internet Protocol** (IP) part of the internet layer and is a set of rules 
 - **Routing** - Specifies how these packets are sent through the routers.
 - **Fragmentation** - If data is too large it is split up even more into smaller packets and then reassemble them when it reaches the destination.
 
-## IPv4 (Internet Protocol Version 4)
+## 2. IPv4 (Internet Protocol Version 4)
 - Uses a **32 bit address** to label devices.
 - Divided into **4 bytes**, with each byte seperated by a dot(.).
 - Each number in between the dots ranges from **0-255** (since 2^8 = 256).
 ### Example
 123.243.1.1
 
-## IPv6 (Internet Protocol Version 6)
+## 3. IPv6 (Internet Protocol Version 6)
 - Uses a **128 bit address** to label devices
 - Divded into **16 bytes**, with every 2 bytes seperated by a colon(:)
 ### Rules
@@ -28,7 +51,7 @@ The **Internet Protocol** (IP) part of the internet layer and is a set of rules 
 Full Address: FA10:0000:0000:0000:0202:B3FF:FE1E:1234<br>
 Collapsed Address: FA10::202:B3FF:FE1E:1234
 
-## Transport Protocol
+## 4. Transport Protocol
 
 Transport Protocols are a set of rules and procedures that actuallly does the action of sending the data.
 
@@ -37,14 +60,14 @@ Transport Protocols are a set of rules and procedures that actuallly does the ac
 | Transmission Control Protocol (TCP) | Reliable but slow, ensures that data actually arrives and in order. |
 | User Datagram Protocol (UDP) | Less Reliable but fast, unconnected, does not check whether datagram actually arrives or not, datagrams are also not guaranteed to arrive in order. |
 
-## Endianess
+## 5. Endianess
 
 The standard network uses Big Endian while different computer architectures can use different Endianess.
 
 - Big Endian - The most significant byte (left most byte) is stored in the lowest memory address.
 - Little Endian - The least signigicant byte (right most byte) is stored in the lowest memory address.
 
-## Byte Order Conversion Functions
+## 6. Byte Order Conversion Functions
 | Function | Description
 |----|---|
 | htons() | **h**ost **to** **n**etwork **s**hort, for Ports
@@ -52,11 +75,12 @@ The standard network uses Big Endian while different computer architectures can 
 | ntohs() | **n**etwork **to** **h**ost **s**hort, for Ports
 | ntohl() | **n**etwork **to** **h**ost **l**ong, for IP addresses
 
-## Socket (IP Address + Port Number)
+## 7. Socket
 * IP address - Unique numerical label for every device connected to a network.
 * Port number - A numeric label that is used in networking to direct data to a specific process, service, or application on a device.
+* Socket - IP address + Port number
 
-## Address Info
+## 8. Address Info
 ```C
 struct addrinfo
 {
@@ -102,6 +126,8 @@ struct addrinfo
 * **ai_cannoname** - The canon (official) name of the remote host (server).
 * **ai_next** - A pointer to the next address info struct in the linked list.
 
+
+## 9. Networking Functions
 ## getaddrinfo()
 
 ### Description
@@ -276,3 +302,6 @@ int recvfrom(
 // returns -1 : error
 // otherwise  : number of bytes processed
 ```
+
+## 10. References
+1. [Beej's Guide to Network Programming Using Internet Sockets](https://beej.us/guide/bgnet/)
