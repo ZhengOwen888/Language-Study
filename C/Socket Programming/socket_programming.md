@@ -3,8 +3,8 @@
 ## Table of Contents
 > - [0. Summary](#0-summary)
 > - [1. Internet Layer](#1-internet-layer)
-> - [2. IPv4](#2-ipv4)
-> - [3. IPv6](#3-ipv6)
+> - [2. IPv4](#2-ipv4-(internet-protocol-version-4))
+> - [3. IPv6](#3-ipv6-(internet-protocol-version-4))
 > - [4. Transport Protocol](#4-transport-protocol)
 > - [5. Endianess](#5-endianess)
 > - [6. Byte Order Conversion Functions](#6-byte-order-conversion-functions)
