@@ -1,17 +1,17 @@
 # Socket Programming Fundamentals
 
 ## Table of Contents
-> - [0. Summary](#0.-summary)
-> - [1. Internet Layer](#1.-internet-layer)
-> - [2. IPv4](#2.-ipv4)
-> - [3. IPv6](#3.-ipv6)
-> - [4. Transport Protocol](#4.-transport-protocol)
-> - [5. Endianess](#5.-endianess)
-> - [6. Byte Order Conversion Functions](#6.-byte-order-conversion-functions)
-> - [7. Socket](#7.-socket)
-> - [8. Address Info](#8.-address-info)
-> - [9. Networking Functions](#9.-networking-functions)
-> - [10. References](#10.-references)
+> - [0. Summary](#0-summary)
+> - [1. Internet Layer](#1-internet-layer)
+> - [2. IPv4](#2-ipv4)
+> - [3. IPv6](#3-ipv6)
+> - [4. Transport Protocol](#4-transport-protocol)
+> - [5. Endianess](#5-endianess)
+> - [6. Byte Order Conversion Functions](#6-byte-order-conversion-functions)
+> - [7. Socket](#7-socket)
+> - [8. Address Info](#8-address-info)
+> - [9. Networking Functions](#9-networking-functions)
+> - [10. References](#10-references)
 ---
 
 ## 0. Summary
