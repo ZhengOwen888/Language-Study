@@ -1,4 +1,4 @@
-# gdb Fundamentals
+# GDB Fundamentals
 
 ## Table of Contents
 > - [0. Summary](#0.-summary)
