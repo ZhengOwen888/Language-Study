@@ -5,7 +5,7 @@
 > - [1. Starting gdb](#1-starting-gdb)
 > - [2. Breakpoints](#2-breakpoints)
 > - [3. Stepping](#3-stepping)
-> - [4. Inpecting Variables](#4-inpecting-variables)
+> - [4. Inpecting Variables](#4-inspecting-variables)
 > - [5. Stack Tracing](#5-stack-tracing)
 > - [6. Coredumps](#6-coredumps)
 > - [7. References](#7-references)
