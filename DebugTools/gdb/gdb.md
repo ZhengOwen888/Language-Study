@@ -3,12 +3,13 @@
 ## Table of Contents
 > - [0. Summary](#0-summary)
 > - [1. Starting gdb](#1-starting-gdb)
-> - [2. Breakpoints](#2-breakpoints)
-> - [3. Stepping](#3-stepping)
-> - [4. Inpecting Variables](#4-inspecting-variables)
-> - [5. Stack Tracing](#5-stack-tracing)
-> - [6. Coredumps](#6-coredumps)
-> - [7. References](#7-references)
+> - [2. Run](#2-run)
+> - [3. Breakpoints](#3-breakpoints)
+> - [4. Stepping](#4-stepping)
+> - [5. Inpecting Variables](#5-inspecting-variables)
+> - [6. Stack Tracing](#6-stack-tracing)
+> - [7. Coredumps](#7-coredumps)
+> - [8. References](#8-references)
 ---
 
 ## 0. Summary
@@ -83,7 +84,7 @@ If you want to look at the current function call stack use this command.
 (gdb) advance sum # execute until the given location is reached (line number, function name, filename:line).
 ```
 
-## Coredumps
+## 7. Coredumps
 Segmentation fault occurs when the program accesses memory that it is not allowed to. Segment comes from memory segments (e.g. Text Segment, Data Segment, Heap, Stack)<br>.
 
 When segmentation fault occurs, a snapshot of the program called core is created.
@@ -94,11 +95,11 @@ Segmentation fault (core dumped)
 gdb -tui -c core sumall
 ```
 
-If no core was created allow core dump of any size with this command.
+If no core was created, you can allow core dump of any size with this command.
 ```sh
 ulimit -c unlimited
 ./sumall
 ```
 
-## 7. References
+## 8. References
 1. <a href="https://beej.us/guide/bggdb/" target="_blank">Beej's Quick Guide to GDB</a>
