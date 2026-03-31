@@ -125,7 +125,7 @@ The report below shows us that malloc was called with a fishy (weird or suspicio
 | Definitely Lost | No pointer at all is pointing to this block of memory, you have completely lost the reference to this block of memory. (e.g. After allocating a block of memory, you set the pointer to NULL, You have lost the reference)|
 | Indirectly Lost | No pointer points at all is pointing to this block of memory. The difference being that the reason it was lost was because some other reference to a block of memory was lost. (e.g. A pointer to the start of the linked list was lost. This indirectly cause the rest of the allocated memory pointed to by the start of the linked list to be lost.)  |
 | Possibly Lost |  There is a pointer to a block of memory. However, that pointer points to somewhere in the middle of the block of memory not the start. |
-| Suppressed | Some leaks are suppressed since they are often caused by libraries and are usually safe to ignore. |
+| Suppressed | Some leaks are suppressed since they are often caused by external libraries and are usually safe to ignore. |
 
 ## 6. References
 1. <a href="https://valgrind.org/docs/manual/index.html" target="_blank">Valgrind Documentation</a>
