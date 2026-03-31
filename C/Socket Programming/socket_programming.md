@@ -128,7 +128,7 @@ struct addrinfo
 
 
 ## 9. Networking Functions
-## getaddrinfo()
+## 9.1. getaddrinfo()
 
 ### Description
 Uses a hostname and or service (port) to create one or more structures of address info.
@@ -146,7 +146,7 @@ int getaddinfo(
 // otherwise : error (use gai_strerr())
 ```
 
-## socket()
+## 9.2. socket()
 
 ### Description
 Creates a new socket endpoint
@@ -163,7 +163,7 @@ int socket(
 // returns -1   : error
 ```
 
-## bind()
+## 9.3. bind()
 
 ### Decription
 Associates a socket with a specific IP address and port number. Required by servers before accepting connections.
@@ -179,7 +179,7 @@ int bind(
 // returns -1: error
 ```
 
-## connect()
+## 9.4. connect()
 
 ### Decription
 Connect the host socket to the remote host socket (client connects to server).
@@ -195,7 +195,7 @@ int connect(
 // returns -1: error
 ```
 
-## listen()
+## 9.5. listen()
 
 ### Decription
 Listen for more incoming requests or connections from remote host. (server listening for clients)
@@ -210,7 +210,7 @@ int listen(
 // returns -1 : error
 ```
 
-## accept()
+## 9.6. accept()
 
 ### Decription
 Accept a connection request from remote host (server accept client's request).
@@ -227,7 +227,7 @@ int accept(
 // otherwise  : a new socket descriptor for communication with the client.
 ```
 
-## send()
+## 9.7. send()
 
 ### Decription
 Sends data over a connected socket (usually TCP).
@@ -245,7 +245,7 @@ int send(
 // otherwise  : number of bytes processed
 ```
 
-## recv()
+## 9.8. recv()
 
 ### Decription
 Receives data from a connected socket (usually TCP).
@@ -263,7 +263,7 @@ int recv(
 // otherwise  : number of bytes processed
 ```
 
-## sendto()
+## 9.10. sendto()
 
 ### Decription
 Sends data to a specific address (usually UDP).
@@ -283,7 +283,7 @@ int sendto(
 // otherwise  : number of bytes processed
 ```
 
-## recvfrom()
+## 9.11. recvfrom()
 
 ### Decription
 Receives data from a socket and captures the sender’s address (usually UDP).
