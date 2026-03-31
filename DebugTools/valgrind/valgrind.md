@@ -121,11 +121,11 @@ The report below shows us that malloc was called with a fishy (weird or suspicio
 
 | Leak Type | Description |
 |---|---|
-| Still Reachable | The block is still pointed to by some pointer, the start pointer still exists. Memory could have been freed but it did not do it.|
-| Definitely Lost | No pointer points to the block of memory at all, you lost the reference to that block of memory. |
-| Indirectly Lost | No pointer points to this block, but the reason is it is referenced by other lost blocks (e.g. the first node of a linked list was lost, the rest of the node are indirectly lost.)  |
-| Possibly Lost |  There is a pointer to a block of memory, but the pointer is an interior pointer meaning it is somewhere in the middle of the memory block just not the start.|
-| Suppressed | Some known allocation from a library are being suppressed. |
+| Still Reachable | The block of memory is still being pointed to by a pointer. However, the program did not free that block of memory, this is easily fixable by calling free. |
+| Definitely Lost | No pointer at all is pointing to this block of memory, you have completely lost the reference to this block of memory. (e.g. After allocating a block of memory, you set the pointer to NULL, You have lost the reference)|
+| Indirectly Lost | No pointer points at all is pointing to this block of memory. The difference being that the reason it was lost was because some other reference to a block of memory was lost. (e.g. A pointer to the start of the linked list was lost. This indirectly cause the rest of the allocated memory pointed to by the start of the linked list to be lost.)  |
+| Possibly Lost |  There is a pointer to a block of memory. However, that pointer points to somewhere in the middle of the block of memory not the start. |
+| Suppressed | Some leaks are suppressed since they are often caused by libraries and are usually safe to ignore. |
 
 ## 6. References
 1. <a href="https://valgrind.org/docs/manual/index.html" target="_blank">Valgrind Documentation</a>
