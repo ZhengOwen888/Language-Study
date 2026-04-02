@@ -1,0 +1,124 @@
+# Segmentation
+
+## Table of Contents
+
+## Pure Segmentation
+
+When talking about pure paging, each process will get its own single virtual address space. However, at times it might be easier to seperate this virtual address space into meaningful segments (e.g. Stack Segment, Heap Segment, Data Segment, Text Segment).
+Pages differ from segments, as size of pages are fixed while for segments it's not.
+
+### Contrast
+|| Paging | Segmentation |
+|---|---|---|
+| Number of Linear Address spaces | 1 | Many |
+| Total Address Space can Exceed Physical Memory Size | Yes | Yes |
+| Data Can be distinguished and Proteced Seperately | No | Yes |
+| Easy to Handle Tables that Frequently Change in Size | No | Yes |
+| Reason it was invented | Larger address space without having to buy more physical memory. | Allows the Programmer to break up data into independent address spaces and help with sharing and protection. |
+
+
+### Fragmentation
+| Fragmentation with Segments | Description |
+|---|---|
+| External Fragmentation | This happens when free memory gets split into many small, usuable scattered holes between allocated segments. e.g(\[ Segment A ] \[ free ] \[ SegmentB ] \[ free ] \[ Segment C ]) |
+| Internal Fragmentation | This happens when there are wasted space inside a allocated segment. (e.g. A process needs 50KB, but OS allocates 64KB, which results in 14KB of wasted resource.)|
+
+## Problems with Pure Segmentation
+- Segments can grow to max or shrink.
+- Memory is contiguous (right next to each other) for each segment.
+- As segment are alloacted and freed:
+    - External fragmentation appears.
+    - Hard to grow a segment dynamically without moving it.
+- Managing large, variable sized segments in contiguous memory is inefficient.
+- Can be impossible to put an entire segment in the Main (since they can grow very large).
+
+## Segmentation with Paging
+- Divide the segments into fixed size pages.
+- Each segment can occupy non continguous physical pages
+- No need for a segment to be in one contiguous block.
+- No need to put an entire segment in the Main memory all at once.
+- There will however be some internal fragmentation, though very small.
+
+## Segmentation With Paging: Multics
+
+|Important Tables | Purpose |
+|---|---|
+| Segment Table | Store a segment descriptor for each segment.|
+| Page Table | Store the page frame number for a specific virtual page.|
+
+### Virtual Address with Segmentation
+
+A 34-bit Multics Virtual Address
+
+| Field              | Size    | Purpose                                |
+|--------------------|---------|----------------------------------------|
+| Segment Number     | 18 bits | Used to index a segment table.         |
+| Page Number        | 6 bits  | Select a page within the segment.      |
+| Offset within Page | 10 bits | Exact location within the page.        |
+
+### Segment Descriptor
+
+| Field | Size | Purpose |
+|-------|------|---------|
+| Main Memory Address of Page Table  | 18 bits | Tells us the specific page table for the segment. |
+| Segment Length (in Pages)          | 9 bits  | Number of pages used by this segment. |
+| Segment is Paged                   | 1 bit   | Tells us if this segment's page table is in Main Memory. |
+| Page Size                          | 1 bit   | Size of a single page. |
+| Empty                              | 1 bit   | Nothing. |
+| Miscellaneous                      | 3 bits  | Others. |
+| Protection                         | 3 bits  | Controls access.
+
+### Converting Virtual Address in Multics to Physical Address
+
+1. Given a virtual address, the first few significant bits will represent the segment number. With that segment number we can take a look at the segment table to get the base address of the page table for that specific segment. However, if the segment's page table is not in memory then a segment fault will occur
+
+2. Now we know which specific page table to search through, we can now use the next few significant bits which represents the page number. With the page number we can correctly identify the correct page table entry to look for.
+
+3. There are two cases when searching for a page entry in the page table. Either the entry for the page we are looking for is there (Case 1) or that it not (Case 2).
+
+    - Case 1: If the page entry with the page we are looking for is in the page table, we can directly get the physical frame number.
+
+    - Case 2: If the page entry with the page we are looking for is **not** in the page table we will get a page fault. We will need choose which page to evict with a page replacement algorithm, and we need to make sure that if the page is dirty(modified) then it would need to be copied to the disk. After that we can swap the page we will evict with the page in the disk. Now that we have the page we need, the page table will be upadted and we can grab the physical frame number.
+
+4. Now that we have the physical frame number we can now construct the physical address. The physical address is simply [ physical frame number | Offset within Page ].
+
+## Segmentation With Paging: Pentium
+
+| Important Tables              | Purpose                                          |
+|-------------------------------|--------------------------------------------------|
+| Local Descriptor Table (LDT)  | Each program will have their own private LDT.    |
+| Global Descriptor Table (GDT) | GDT is shared by the whole system.               |
+
+### x86 Selector
+|         | Index | GDT/LDT | Privilege |
+|---------|-------|---------|-----------|
+| Purpose | The entry number of the GDT or LDT | Specifies whether the segment is local or global | Protection level  |
+| Bits    | 13 bits | 1 bit | 2 bits |
+
+### x86 Descriptor (fetched using the Selector)
+Size is **Not completely accurate**
+| Field      | Size    | Purpose                                                    |
+|------------|---------|------------------------------------------------------------|
+| Base       | 32 bits | Starting address of the segment in the linear address space|
+| Limit      | 20 bits | Size of the segment (in bytes or pages depending on G bit) |
+| G bit      | 1 bit   | Granularity — 0 means Limit is in bytes, 1 means in pages  |
+| P bit      | 1 bit   | Whether the segment is present in memory                   |
+| DPL        | 2 bits  | Privilege level (0-3)                                      |
+| Type       | 4 bits  | Segment type and protection (e.g. read/write, execute only)|
+
+### Converting Virtual Address in x86 to Physical Address
+
+1. We need a **selector** (loaded into a segment register like CS or DS)
+
+2. Use the selector to find the entry in the **LDT or GDT** and fetch the **descriptor**
+   - The hardware checks the **P bit** to confirm the segment is present in memory
+   - The hardware checks the **Limit field** to make sure the offset is not out of bounds
+
+3. Add the **Offset** to the **Base address** from the descriptor → this gives the **linear address**
+
+4. If **paging is disabled**, the linear address is the physical address. Done.
+
+5. If **paging is enabled**, the linear address is split into three fields:
+   - **Dir (10 bits)**, indexes into the Page Directory to find the right Page Table
+   - **Page (10 bits)**,  indexes into the Page Table to find the right Page Frame
+   - **Offset (12 bits)**,  added to the Page Frame address to get the final **physical address**
