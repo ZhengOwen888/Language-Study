@@ -128,12 +128,12 @@ struct addrinfo
 
 
 ## 9. Networking Functions
-## 9.1. getaddrinfo()
+### 9.1. getaddrinfo()
 
-### Description
+#### Description
 Uses a hostname and or service (port) to create one or more structures of address info.
 
-### Syntax
+#### Syntax
 ```C
 int getaddinfo(
     const char *node,               // hostname (e.g. "www.google.com")
@@ -146,12 +146,12 @@ int getaddinfo(
 // otherwise : error (use gai_strerr())
 ```
 
-## 9.2. socket()
+### 9.2. socket()
 
-### Description
+#### Description
 Creates a new socket endpoint
 
-### Syntax
+#### Syntax
 ```C
 int socket(
     int domain,   // Protocol Family (Use ai_family)
@@ -163,12 +163,12 @@ int socket(
 // returns -1   : error
 ```
 
-## 9.3. bind()
+### 9.3. bind()
 
-### Decription
+#### Decription
 Associates a socket with a specific IP address and port number. Required by servers before accepting connections.
 
-### Syntax
+#### Syntax
 ```C
 int bind(
     int sockfd,
@@ -179,12 +179,12 @@ int bind(
 // returns -1: error
 ```
 
-## 9.4. connect()
+### 9.4. connect()
 
-### Decription
+#### Decription
 Connect the host socket to the remote host socket (client connects to server).
 
-### Syntax
+#### Syntax
 ```C
 int connect(
     int sockfd,
@@ -195,12 +195,12 @@ int connect(
 // returns -1: error
 ```
 
-## 9.5. listen()
+### 9.5. listen()
 
-### Decription
+#### Decription
 Listen for more incoming requests or connections from remote host. (server listening for clients)
 
-### Syntax
+#### Syntax
 ```C
 int listen(
     int sockfd,
@@ -210,12 +210,12 @@ int listen(
 // returns -1 : error
 ```
 
-## 9.6. accept()
+### 9.6. accept()
 
-### Decription
+#### Decription
 Accept a connection request from remote host (server accept client's request).
 
-### Syntax
+#### Syntax
 ```C
 int accept(
     int sockfd,
@@ -227,12 +227,12 @@ int accept(
 // otherwise  : a new socket descriptor for communication with the client.
 ```
 
-## 9.7. send()
+### 9.7. send()
 
-### Decription
+#### Decription
 Sends data over a connected socket (usually TCP).
 
-### Syntax
+#### Syntax
 ```C
 int send(
     int sockfd,
@@ -245,12 +245,12 @@ int send(
 // otherwise  : number of bytes processed
 ```
 
-## 9.8. recv()
+### 9.8. recv()
 
-### Decription
+#### Decription
 Receives data from a connected socket (usually TCP).
 
-### Syntax
+#### Syntax
 ```C
 int recv(
     int sockfd,
@@ -263,12 +263,12 @@ int recv(
 // otherwise  : number of bytes processed
 ```
 
-## 9.10. sendto()
+### 9.10. sendto()
 
-### Decription
+#### Decription
 Sends data to a specific address (usually UDP).
 
-### Syntax
+#### Syntax
 ```C
 int sendto(
     int sockfd,
@@ -283,12 +283,12 @@ int sendto(
 // otherwise  : number of bytes processed
 ```
 
-## 9.11. recvfrom()
+### 9.11. recvfrom()
 
-### Decription
+#### Decription
 Receives data from a socket and captures the sender’s address (usually UDP).
 
-### Syntax
+#### Syntax
 ```C
 int recvfrom(
     int sockfd,
