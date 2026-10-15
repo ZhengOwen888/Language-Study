@@ -2,7 +2,7 @@
 #include <string.h>
 #include "dynamic_array.h"
 
-DynamicArray *da_create_dynamic_array(size_t elem_size, CompareFunc cmp_func)
+DynamicArray *da_create_dynamic_array(size_t elem_size, Func cmp_func)
 {
     if (elem_size < DA_MIN_ELEM_SIZE)
     {
