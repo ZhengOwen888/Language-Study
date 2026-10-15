@@ -188,6 +188,46 @@ int close(int fd);
 | `open` | Establish a connection between the lowest available file descriptor and the actual file, so that you can interact with the actual file. | <ol><li>`pathname` - A null terminating string that contain the path to that file.</li><li>`flags` - bitwise mask that controls how the file is opened.</li><li>`mode` - Specify the file permissions, this only applies when creating the new file.</li></ol> | <ul><li>**On Success** - Return lowest available non negative file descriptor.</li><li>**On Failure** - Returns `-1` and sets global `errno`.</li></ul> |
 | `close` | Release the file descriptor so that it is no longer used. | <ol><li>`fd` - The valid open integer file descriptor that needs to be closed.</li></ol> | <ul><li>**On Success** - Return `0`.</li><li>**On Failure** - Return `-1` and sets global `errno`.</li></ul> |
 
+### Important open() flags
+| Flag | Description |
+|---|---|
+| `O_RDONLY` / `O_WRONLY` / `O_RDWR` | You can only choose one access mode: read, write, or both. |
+| `O_CREAT` | Create missing file. You will need to set file permission mode if you use this flag. |
+| `O_TRUNC` | Truncate existing regular file, if you opened with with suitable write access.  |
+| `O_APPEND` | Each write is appended to the file end. |
+<!-- | `O_EXCL` | Paired with `O_CREAT`, does the checking and creating in one atomic step. |
+| `O_CLOEXEC` | Close this file descriptor if a running process successfully calls an exec function. | -->
+
+### File Permission - mode_t mode
+
+If you use the `O_CREAT` flag you must set the file permission. The file permission can be represented by 4 digits such as: `0644`.
+| Digit Position | For Who? |
+|---|---|
+| 1st Digit (0) | Octal - Interpret the following number as base-8 (octal) instead of base-10 (decimal).|
+| 2nd Digit (6) | Owner / User - The one who owns the file. |
+| 3rd Digit (4) | Group - The users who belong to the file's group. |
+| 4th Digit (4) | Others - Everyone else in the system. |
+
+### File Permission - How each Individual Digit is Calculated
+Each digit is a single number from 0 to 7. The number is calculated by adding up the following:
+- `4` = Read(`r`)
+- `2` = Write(`w`)
+- `1` = Execute(`x`)
+- `0` = No Permission(`-`)
+
+To get a specific combination, you just have to add the numbers together:
+- `7` (4 + 2 + 1) = Read, Write and Execute (`rwx`)
+- `6` (4 + 2 + 0) = Read and Write (`rw-`)
+- `5` (4 + 0 + 1) = Read and Execute (`r-x`)
+- `4` (4 + 0 + 0) = Read Only (`r--`)
+- `3` (0 + 2 + 1) = Write and Execute (`-wx`)
+- `2` (0 + 2 + 0) = Write Only (`-w-`)
+- `1` (0 + 0 + 1) = Execute Only (`--x`)
+- `0` (0 + 0 + 0) = No Permission
+
+Exmaple: `0644` -> `rw-r--r--`. Owner gets read write access. Group gets only read access. Others also get only read access.
+
+
 ## 2.2 Low Level File IO - read() and write()
 ```c
 #include <unistd.h>
