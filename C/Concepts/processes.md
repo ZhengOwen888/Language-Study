@@ -252,13 +252,13 @@ pid_t waitpid(pid_t pid, int *status, int options);
 
 **Purpose:** Wait for selected child processe with additional control options.
 
-### pid Values
+### pid Values for Input
 | Value | Behavior |
 |---|---|
 | > 0 | wait specific child with this pid. |
 | -1 | wait for any child. |
 
-### Important Options
+### Important Options for Input
 | Option | Meaning |
 |---|---|
 | 0 | Block until specified child terminates. |
