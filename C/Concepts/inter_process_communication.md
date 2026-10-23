@@ -129,9 +129,6 @@ int main(void) {
     if (pid < 0) {
         // Always check if fork() failed.
         perror("fork");
-        // Remember to close the pipe ends.
-        close(pipefd[0]);
-        close(pipefd[1]);
         exit(EXIT_FAILURE);
 
     } else if (pid == 0) {
@@ -143,7 +140,7 @@ int main(void) {
         char character;
         char read_buffer[1024];
         ssize_t bytes_read;
-        int count = 0;
+        unsigned int count = 0;
         while ((bytes_read = read(pipefd[0], &character, 1)) > 0) {
             if (character == '\n') {
                 read_buffer[count] = '\0';
@@ -153,8 +150,6 @@ int main(void) {
             } else {
                 if (count >= sizeof(read_buffer) - 1) {
                     fprintf(stderr, "Child: Message too long!\n");
-                    close(pipefd[0]);
-                    fflush(stdout);
                     _exit(EXIT_FAILURE);
                 }
                 read_buffer[count++] = character;
@@ -244,9 +239,6 @@ int main(void) {
     if (pid1 < 0) {
         // Always check if fork() failed.
         perror("fork1");
-        // Remember to close the pipe endpoints.
-        close(pipefd[0]);
-        close(pipefd[1]);
         exit(EXIT_FAILURE);
     }
     if (pid1 == 0) {
@@ -281,8 +273,6 @@ int main(void) {
     if (pid2 < 0) {
         // Always check if fork() failed.
         perror("fork2");
-        // Remember to close the pipe endpoints.
-        close(pipefd[0]);
         exit(EXIT_FAILURE);
     }
     if (pid2 == 0) {
@@ -291,7 +281,7 @@ int main(void) {
         char character;
         char read_buffer[1024];
         ssize_t bytes_read;
-        int count = 0;
+        unsigned int count = 0;
         while ((bytes_read = read(pipefd[0], &character, 1)) > 0) {
             if (character == '\n') {
                 read_buffer[count] = '\0';
@@ -300,8 +290,6 @@ int main(void) {
             } else {
                 if (count >= sizeof(read_buffer) - 1) {
                     fprintf(stderr, "Child 2: Message too long!\n");
-                    close(pipefd[0]);
-                    fflush(stdout);
                     _exit(EXIT_FAILURE);
                 }
                 read_buffer[count++] = character;
@@ -387,9 +375,6 @@ int main(void) {
     if (pipe(pipe2fd) < 0) {
         // Always check if pipe() failed.
         perror("pipe2");
-        // Remember to close the pipe endpoints.
-        close(pipe1fd[0]);
-        close(pipe1fd[1]);
         exit(EXIT_FAILURE);
     }
 
@@ -397,11 +382,6 @@ int main(void) {
     if (pid < 0) {
         // Always check if fork() failed.
         perror("fork");
-        // Remember to close the pipe endpoints.
-        close(pipe1fd[0]);
-        close(pipe1fd[1]);
-        close(pipe2fd[0]);
-        close(pipe2fd[1]);
         exit(EXIT_FAILURE);
 
     }  else if (pid == 0) {
@@ -412,7 +392,7 @@ int main(void) {
         char character;
         char read_buffer[MAX_WORD_LEN];
         ssize_t bytes_read;
-        int count = 0;
+        unsigned int count = 0;
         // Keep Reading bytes sent by Parent
         while ((bytes_read = read(pipe1fd[0], &character, 1)) > 0) {
             if (character == '\0') {
@@ -424,9 +404,6 @@ int main(void) {
             } else {
                 if (count >= sizeof(read_buffer) - 1) {
                     fprintf(stderr, "Word too long");
-                    close(pipe1fd[0]);
-                    close(pipe2fd[1]);
-                    fflush(stdout);
                     _exit(EXIT_FAILURE);
                 }
                 read_buffer[count++] = character;
@@ -519,9 +496,6 @@ int main(void) {
     if (pid < 0) {
         // Always check if fork() failed.
         perror("fork1");
-        // Remember to close pipe endpoints.
-        close(pipefd[0]);
-        close(pipefd[1]);
         exit(EXIT_FAILURE);
 
     } else if (pid == 0) {
@@ -537,8 +511,6 @@ int main(void) {
         if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
             // Always check if dup failed.
             perror("dup2");
-            // Remember to close pipe endpoints.
-            close(pipefd[1]);
             _exit(EXIT_FAILURE);
         }
         // No longer need pipefd[1] after we redirected standard out (1) to write end (pipefd[1]).
@@ -564,8 +536,6 @@ int main(void) {
     if (pipe(pipefd) < 0) {
         // Always check if pipe() failed.
         perror("pipe2");
-        // Remember to close pipe endpoints.
-        close(previous_read_fd);
         exit(EXIT_FAILURE);
     }
 
@@ -574,10 +544,6 @@ int main(void) {
     if (pid < 0) {
         // Always check if fork() failed.
         perror("fork2");
-        // Don't forget to close the pipe endpoints.
-        close(pipefd[0]);
-        close(pipefd[1]);
-        close(previous_read_fd);
         exit(EXIT_FAILURE);
 
     } else if (pid == 0) {
@@ -589,9 +555,6 @@ int main(void) {
         if (dup2(previous_read_fd, STDIN_FILENO) == -1) {
             // Always check if dup failed.
             perror("dup2");
-            // Remember to close pipe endpoints.
-            close(pipefd[1]);
-            close(previous_read_fd);
             _exit(EXIT_FAILURE);
         }
         // No longer need `previous_read_fd` after we redirected standard in (0) to `previous_read_fd`.
@@ -601,8 +564,6 @@ int main(void) {
         if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
             // Always check if dup failed.
             perror("dup2");
-            // Remember to close pipe endpoints.
-            close(pipefd[1]);
             _exit(EXIT_FAILURE);
         }
         // No longer need pipefd[1] after we redirected standard out (1) to write end (pipefd[1]).
@@ -629,8 +590,6 @@ int main(void) {
     if (pipe(pipefd) < 0) {
         // Always check if pipe() failed.
         perror("pipe3");
-        // Remember to close pipe endpoints.
-        close(previous_read_fd);
         exit(EXIT_FAILURE);
     }
 
@@ -639,10 +598,6 @@ int main(void) {
     if (pid < 0) {
         // Always check if fork() failed.
         perror("fork3");
-        // Remember to close pipe endpoints.
-        close(pipefd[0]);
-        close(pipefd[1]);
-        close(previous_read_fd);
         exit(EXIT_FAILURE);
 
     } else if (pid == 0) {
@@ -654,9 +609,6 @@ int main(void) {
         if (dup2(previous_read_fd, STDIN_FILENO) == -1) {
             // Always check if dup failed.
             perror("dup2");
-            // Remember to close pipe endpoints.
-            close(pipefd[1]);
-            close(previous_read_fd);
             _exit(EXIT_FAILURE);
         }
         // No longer need `previous_read_fd` after we redirected standard in (0) to `previous_read_fd`.
@@ -666,8 +618,6 @@ int main(void) {
         if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
             // Always check if dup failed.
             perror("dup2");
-            // Remember to close pipe endpoints.
-            close(pipefd[1]);
             _exit(EXIT_FAILURE);
         }
         // No longer need pipefd[1] after we redirected standard out (1) to write end (pipefd[1]).
@@ -695,8 +645,6 @@ int main(void) {
     if (pid < 0) {
         // Always check if fork() failed.
         perror("fork");
-        // Remember to close pipe endpoints.
-        close(previous_read_fd);
         exit(EXIT_FAILURE);
     } else if (pid == 0) {
         // Child Process
@@ -705,8 +653,6 @@ int main(void) {
         if (dup2(previous_read_fd, STDIN_FILENO) == -1) {
             // Always check if dup failed.
             perror("dup2");
-            // Remember to close pipe endpoints.
-            close(previous_read_fd);
             _exit(EXIT_FAILURE);
         }
         // No longer need `previous_read_fd` after we redirected standard in (0) to `previous_read_fd`.
@@ -766,8 +712,6 @@ int main(void) {
     pid_t pid = fork();
     if (pid < 0) {
         perror("fork");
-        close(pipefd[0]);
-        close(pipefd[1]);
         exit(EXIT_FAILURE);
     } else if (pid == 0) {
         // Child Process 1
@@ -775,7 +719,6 @@ int main(void) {
 
         if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
             perror("dup2");
-            close(pipefd[1]);
             _exit(EXIT_FAILURE);
         }
         close(pipefd[1]);
@@ -795,6 +738,8 @@ int main(void) {
             - Parent waiting for Child 1 to terminate (Blocks).
             - Child 1 is waiting for more space in the pipe buffer (Blocks).
             - Deadlock. Everyone is waiting for each other nothing happens.
+        Your terminal currently is probably showing that your program is
+        still running but nothing is happening.
     */
     wait(NULL);
 
@@ -803,13 +748,11 @@ int main(void) {
     pid = fork();
     if (pid < 0) {
         perror("fork");
-        close(pipefd[0]);
         exit(EXIT_FAILURE);
     } else if (pid == 0) {
         // Child 2
         if (dup2(pipefd[0], STDIN_FILENO) < 0) {
             perror("dup2");
-            close(pipefd[0]);
             _exit(EXIT_FAILURE);
         }
         close(pipefd[0]);

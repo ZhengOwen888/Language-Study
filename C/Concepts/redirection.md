@@ -141,7 +141,6 @@ int main(void) {
     if (fd2 < 0) {
         // Always check if dup() failed.
         perror("dup");
-        close(fd1); // Don't forget to close, very important
         exit(EXIT_FAILURE);
     }
     // Print the fd values
@@ -153,7 +152,7 @@ int main(void) {
 
     // Check the number of bytes written.
     if (bytes_written >= 0) {
-        fprintf(stdout, "Wrote to fd1(%d): %.*s\n", fd1, bytes_written, write_message);
+        fprintf(stdout, "Wrote to fd1(%d): %.*s\n", fd1, (int)bytes_written, write_message);
     } else {
         // Check if write failed.
         perror("write");
@@ -213,7 +212,6 @@ int main(void) {
     if (fd2 < 0) {
         // Always check if dup2() failed.
         perror("dup");
-        close(fd1); // Don't forget to close, very important
         exit(EXIT_FAILURE);
     }
     // The fd values
@@ -225,7 +223,7 @@ int main(void) {
 
     // Check the number of bytes written.
     if (bytes_written >= 0) {
-        fprintf(stdout, "Wrote to fd1(%d): %.*s\n", fd1, bytes_written, write_message);
+        fprintf(stdout, "Wrote to fd1(%d): %.*s\n", fd1, (int)bytes_written, write_message);
     } else {
         // Check if write failed.
         perror("write");
@@ -311,13 +309,6 @@ int main(void) {
         if (dup2(output_fd, STDOUT_FILENO) < 0) {
             // Always check if dup2() failed.
             perror("dup2");
-            /*
-                Though you don't really need to close the file descriptor here because it is immediately
-                before `exit()`, I think it is still best practice to close them before exiting the program,
-                especially later on for pipes. The reason you might not need it here is because the Operating
-                System will close all the remaining file descriptors automtically.
-            */
-            close(output_fd);
             _exit(EXIT_FAILURE); // Terminate Child
         }
 
@@ -400,7 +391,6 @@ int main(void) {
         if (dup2(input_fd, STDIN_FILENO) < 0) {
             // Always check if dup2() failed.
             perror("dup2 input");
-            close(input_fd);
             _exit(EXIT_FAILURE);
         }
         // Since we redirected standard in (0) to the Open File Table Entry also referenced
@@ -421,7 +411,6 @@ int main(void) {
         if (dup2(output_fd, STDOUT_FILENO) < 0) {
             // Always check if dup2() failed.
             perror("dup2 output");
-            close(output_fd);
             _exit(EXIT_FAILURE);
         }
         close(output_fd);
@@ -467,3 +456,4 @@ int main(void) {
 2. Redirect in child process before calling exec. If you do it after calling exec the code will never execute if it succeeds.
 3. Don't ever forget to close unnecessary file descriptors, otherwise this might cause resource leaks or unexpected behavior.
 4. `dup()` and `dup2()` does not copy file content it just redirect where the file descriptor references on the Open File Table.
+5. All file descriptors are automatically closed by the operating system after the program terminates.
