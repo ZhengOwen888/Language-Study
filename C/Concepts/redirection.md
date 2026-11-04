@@ -1,7 +1,7 @@
 # Redirection
 
 ## Redirecting IO
-You probably noticed that your programs have been recieving input from standard input (0), outputing to standard out(1), and errors in standard error(0). However, you can change where a program recieves its input or sends its output by modifying which files the file descriptors map or refer to.
+You probably noticed that your programs have been recieving input from standard input (0), outputing to standard out(1), and errors in standard error(2). However, you can change where a program recieves its input or sends its output by modifying which files the file descriptors map or refer to.
 
 ### By Default
 - `stdin` (`0`): Receives input from the terminal.
@@ -18,10 +18,10 @@ By Using redirection you can make these fiile descriptors refer to some other di
 | `cmd < infile` | Redirect `stdin(0)` to read from `infile`. |
 | `cmd > outfile` | Redirect `stdout(1)` to `outfile`, truncating existing content. |
 | `cmd >> outfile` | Redirect `stdout(1)` to `outfile`, appending to existing contents. |
-| `cmd 1> outfile` | Explicityly redirect `stdout(1)` to `outfile`, truncating existing content. |
+| `cmd 1> outfile` | Explicitly redirect `stdout(1)` to `outfile`, truncating existing content. |
 | `cmd 1>> outfile` | Explicitly redirect `stdout(1)` to `outfile`, appending to existing content. |
-| `cmd 2> outfile` | Explicityly redirect `stderr(2)` to `outfile`, truncating existing content. |
-| `cmd 2>> outfile` | Explicityly redirect `stderr(2)` to `outfile`, appending to existing content. |
+| `cmd 2> outfile` | Explicitly redirect `stderr(2)` to `outfile`, truncating existing content. |
+| `cmd 2>> outfile` | Explicitly redirect `stderr(2)` to `outfile`, appending to existing content. |
 | `cmd &> outfile` | Redirect both `stdout(1)` and `stderr(2)` to `outfile` |
 
 **Note:** The input files must exist otherwise it will error. You can't read from a nonexistent file.
@@ -299,11 +299,11 @@ int main(void) {
         }
 
         /*
-            By default the `echo` program will output to standard out (0).
+            By default the `echo` program will output to standard out (1).
 
             However, we want it to output to `hello.txt`. Since we already have a
             file descriptor (`output_fd`) that maps to a Open File Table entry for `hello.txt`
-            after calling the open() function, what we can do is redirect standard out (0)
+            after calling the open() function, what we can do is redirect standard out (1)
             to reference the same Open File Table entry as `output_fd`.
         */
         if (dup2(output_fd, STDOUT_FILENO) < 0) {
@@ -313,7 +313,7 @@ int main(void) {
         }
 
         /*
-            Because we redirected standard out (0) to reference the same
+            Because we redirected standard out (1) to reference the same
             Open File Table entry as `output_fd`, we essentially have two file descriptors
             referencing the same Open File Table entry. It is best to close the one
             we don't need anymore which is the old `output_fd`.
