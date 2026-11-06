@@ -8,10 +8,12 @@ Creating a new process can be expensive because each process needs it own virtua
 |---|---|---|
 | Virtual Address Space | Seperate | Shared |
 | Global Variables | Seperate Copies after fork() | Shared |
-| Heap Memory | Seperate | Shared |
+| Heap | Seperate | Shared |
 | Stack | Each process has it own stack. | Each thread has their own stack. |
 | Open file descriptors | Seperate file descriptor tables, but can share open file entries. | Shared file descriptor table. |
 | Communication | Inter process communication, like using pipes. | Shared memory. |
+
+**Note:** Each thread also have their own registers, including the program counter and stack pointer.
 
 ### Why use Threads?
 
@@ -248,8 +250,8 @@ Some problems can be very easily split into smaller workloads to be distributed 
 
 ex. Matrix Problems, 3D Rendering, and others.
 
-### Common Equation to Use
-There is a common way you can use to distribute the problems to each of the worker threads.
+### 1. Chunking the Workload
+You can split the work into about equal chunks and distribute it between threads.
 ```
 base_size = num_work / num_threads
 remainder = num_work % num_threads
@@ -265,9 +267,9 @@ count = base_size + (thread_num < remainder ? 1 : 0)
 
 We will distribute these to first `remainder` threads. Basically, if there are 10 threads, and `remainder` is 5, we will distribute the 1 work to each of the first 5 threads, so now threads 0 - 4 has `base_size + 1` work and threads 5 - 9 has `base_size` work.
 
-**Note:** This will be a bit confusing at first.
+**Note:** This works if all the work to distribute are equal. If they are not, you might have to use interleving.
 
-### Example: Sum Whole Array
+### Example: Sum Whole Array - Chunking the Workload
 Lets say we have the following of an `int` array:
 1. `array_elements` = 14
 2. `num_threads` = 4
@@ -379,7 +381,114 @@ int main() {
     }
 
     // !!!!! Sum the result from each thread
-    int sum;
+    int sum = 0;
+    for (int i = 0; i < MAX_THREADS; i++) {
+        sum += thread_datas[i].result;
+    }
+
+    fprintf(stdout, "Final Sum - Expected: %d - Got: %d\n",  ((1 + 10002) * 10002) / 2, sum);
+
+    return 0;
+}
+```
+
+## 2. Interleaving the Workload
+Instead of chunking, sometimes it might be better to interleave the workload. This means if there are N threads, then thread X will work on every X + N work.
+
+### Example: Sum Whole Array - Interleaving the Workload
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+#define MAX_THREADS 5
+#define MAX_ARRAY_ELEMENTS 10003
+
+typedef struct thread_data {
+    int *arr;
+    int thread_num;
+    int arr_len;
+    int result;
+} TData;
+
+void *sum_array(void *targs) {
+    // Convert to correct type
+    TData *thread_data = (TData *)targs;
+
+    // Grab the data you need from thread_data.
+    int thread_num = thread_data->thread_num;
+    int *arr = thread_data->arr;
+    int arr_len = thread_data->arr_len;
+    int result = thread_data->result;
+
+    /*
+        Instead of chunking the workload like before, we made each
+        thread work on every `thread_num + num_threads` items.
+
+        If thread_num = 0, then it will work on, element 0, 5, 10, 15, ...
+        If thread_num = 1, then it will work on, element 1, 6, 11, 16, ...
+        And so on ...
+    */
+    for (int i = thread_num; i < arr_len; i += MAX_THREADS) {
+        result += arr[i];
+    }
+
+    // Save the result
+    thread_data->result = result;
+
+    // Terminate the thread
+    pthread_exit(NULL);
+}
+
+int main() {
+    // The array containing the integers we want to sum
+    int arr[MAX_ARRAY_ELEMENTS];
+    for (int i = 0; i < MAX_ARRAY_ELEMENTS; i++) {
+        arr[i] = i;
+    }
+
+    // !!!!! Declare the thread ids and thread data
+    pthread_t thread_ids[MAX_THREADS];
+    TData thread_datas[MAX_THREADS];
+
+    // !!!!! Initalize the thread datas
+    for (int i = 0; i < MAX_THREADS; i++) {
+        // Do the calculations to split the work.
+        thread_datas[i].thread_num = i;
+        thread_datas[i].arr = arr;
+        thread_datas[i].arr_len = MAX_ARRAY_ELEMENTS;
+        thread_datas[i].result = 0;
+    }
+
+    // !!!!! Create the threads
+    int status;
+    for (int i = 0; i < MAX_THREADS; i++) {
+        status = pthread_create(
+            &thread_ids[i],
+            NULL,
+            sum_array,
+            (void *)&thread_datas[i]
+        );
+
+        if (status != 0) {
+            // Always check if pthread_create failed.
+            fprintf(stderr, "pthread_create failed with thread number: %d", i);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // !!!!! Join the threads
+    for (int i = 0; i < MAX_THREADS; i++) {
+        status = pthread_join(thread_ids[i], NULL);
+        if (status != 0) {
+            // Always check if pthread_join failed.
+            fprintf(stderr, "pthread_join failed with thread number: %d", i);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // !!!!! Sum the result from each thread
+    int sum = 0;
     for (int i = 0; i < MAX_THREADS; i++) {
         sum += thread_datas[i].result;
     }
@@ -392,5 +501,5 @@ int main() {
 
 ## Important Stuff
 1. Creating more threads does not always speed up computation. Creating new threads are not free and they also still need to be managed which adds complexity. Only create the number of threads necessary to finish a job.
-2. Threads accessing the same part of the memory will experience race condition unless there are synchronization protection being placed.
+2. Threads accessing the same part of the memory while also writing to the memroy as well, then they will experience race condition unless there are synchronization protection being placed.
 3. Some problems are embarrassingly parallel, meaning they can be easily split into multiple smaller task each thread can take without accessing a shared part of the memory.
